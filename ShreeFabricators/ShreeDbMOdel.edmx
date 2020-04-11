@@ -1,0 +1,343 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="shreedbModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="8.0" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="customer">
+          <Key>
+            <PropertyRef Name="CustomerId" />
+          </Key>
+          <Property Name="CustomerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="Address" Type="varchar" MaxLength="50" />
+          <Property Name="PhoneNo" Type="varchar" MaxLength="10" />
+          <Property Name="PanCardNo" Type="varchar" MaxLength="10" />
+          <Property Name="GstinNo" Type="varchar" MaxLength="14" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" />
+          <Property Name="UpdatedDate" Type="datetime" Precision="0" />
+        </EntityType>
+        <EntityType Name="panelbox">
+          <Key>
+            <PropertyRef Name="PanelBoxId" />
+          </Key>
+          <Property Name="PanelBoxId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="Lable" Type="varchar" MaxLength="50" />
+          <Property Name="Amount" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" />
+          <Property Name="UpdatedDate" Type="datetime" Precision="0" />
+        </EntityType>
+        <EntityType Name="panelboxbill">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="InvoiceNo" Type="int" />
+          <Property Name="panelBoxId" Type="int" />
+          <Property Name="Quantity" Type="int" />
+          <Property Name="Discount" Type="int" />
+          <Property Name="TotalAmount" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" />
+        </EntityType>
+        <EntityType Name="totalbill">
+          <Key>
+            <PropertyRef Name="InvoiceNo" />
+          </Key>
+          <Property Name="InvoiceNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerId" Type="int" />
+          <Property Name="TotalPanelBoxes" Type="int" />
+          <Property Name="TaxableAmount" Type="int" />
+          <Property Name="Sgst" Type="double" />
+          <Property Name="Cgst" Type="double" />
+          <Property Name="TotalTax" Type="double" />
+          <Property Name="NetPayable" Type="double" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FullName" Type="varchar" MaxLength="50" />
+          <Property Name="Username" Type="varchar" MaxLength="50" />
+          <Property Name="Password" Type="varchar" MaxLength="8" />
+          <Property Name="Role" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <Association Name="panelboxbill_ibfk_1">
+          <End Role="totalbill" Type="Self.totalbill" Multiplicity="0..1" />
+          <End Role="panelboxbill" Type="Self.panelboxbill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="totalbill">
+              <PropertyRef Name="InvoiceNo" />
+            </Principal>
+            <Dependent Role="panelboxbill">
+              <PropertyRef Name="InvoiceNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="panelboxbill_ibfk_2">
+          <End Role="panelbox" Type="Self.panelbox" Multiplicity="0..1" />
+          <End Role="panelboxbill" Type="Self.panelboxbill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="panelbox">
+              <PropertyRef Name="PanelBoxId" />
+            </Principal>
+            <Dependent Role="panelboxbill">
+              <PropertyRef Name="panelBoxId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="totalbill_ibfk_1">
+          <End Role="customer" Type="Self.customer" Multiplicity="0..1" />
+          <End Role="totalbill" Type="Self.totalbill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="customer">
+              <PropertyRef Name="CustomerId" />
+            </Principal>
+            <Dependent Role="totalbill">
+              <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="shreedbModelStoreContainer">
+          <EntitySet Name="customer" EntityType="Self.customer" Schema="shreedb" store:Type="Tables" />
+          <EntitySet Name="panelbox" EntityType="Self.panelbox" Schema="shreedb" store:Type="Tables" />
+          <EntitySet Name="panelboxbill" EntityType="Self.panelboxbill" Schema="shreedb" store:Type="Tables" />
+          <EntitySet Name="totalbill" EntityType="Self.totalbill" Schema="shreedb" store:Type="Tables" />
+          <EntitySet Name="user" EntityType="Self.user" Schema="shreedb" store:Type="Tables" />
+          <AssociationSet Name="panelboxbill_ibfk_1" Association="Self.panelboxbill_ibfk_1">
+            <End Role="totalbill" EntitySet="totalbill" />
+            <End Role="panelboxbill" EntitySet="panelboxbill" />
+          </AssociationSet>
+          <AssociationSet Name="panelboxbill_ibfk_2" Association="Self.panelboxbill_ibfk_2">
+            <End Role="panelbox" EntitySet="panelbox" />
+            <End Role="panelboxbill" EntitySet="panelboxbill" />
+          </AssociationSet>
+          <AssociationSet Name="totalbill_ibfk_1" Association="Self.totalbill_ibfk_1">
+            <End Role="customer" EntitySet="customer" />
+            <End Role="totalbill" EntitySet="totalbill" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="shreedbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="customer">
+          <Key>
+            <PropertyRef Name="CustomerId" />
+          </Key>
+          <Property Name="CustomerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneNo" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="PanCardNo" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="GstinNo" Type="String" MaxLength="14" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" />
+          <Property Name="UpdatedDate" Type="DateTime" />
+          <NavigationProperty Name="totalbills" Relationship="Self.totalbill_ibfk_1" FromRole="customer" ToRole="totalbill" />
+        </EntityType>
+        <EntityType Name="panelbox">
+          <Key>
+            <PropertyRef Name="PanelBoxId" />
+          </Key>
+          <Property Name="PanelBoxId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Lable" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Amount" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" />
+          <Property Name="UpdatedDate" Type="DateTime" />
+          <NavigationProperty Name="panelboxbills" Relationship="Self.panelboxbill_ibfk_2" FromRole="panelbox" ToRole="panelboxbill" />
+        </EntityType>
+        <EntityType Name="panelboxbill">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InvoiceNo" Type="Int32" />
+          <Property Name="panelBoxId" Type="Int32" />
+          <Property Name="Quantity" Type="Int32" />
+          <Property Name="Discount" Type="Int32" />
+          <Property Name="TotalAmount" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" />
+          <NavigationProperty Name="panelbox" Relationship="Self.panelboxbill_ibfk_2" FromRole="panelboxbill" ToRole="panelbox" />
+          <NavigationProperty Name="totalbill" Relationship="Self.panelboxbill_ibfk_1" FromRole="panelboxbill" ToRole="totalbill" />
+        </EntityType>
+        <EntityType Name="totalbill">
+          <Key>
+            <PropertyRef Name="InvoiceNo" />
+          </Key>
+          <Property Name="InvoiceNo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerId" Type="Int32" />
+          <Property Name="TotalPanelBoxes" Type="Int32" />
+          <Property Name="TaxableAmount" Type="Int32" />
+          <Property Name="Sgst" Type="Double" />
+          <Property Name="Cgst" Type="Double" />
+          <Property Name="TotalTax" Type="Double" />
+          <Property Name="NetPayable" Type="Double" />
+          <Property Name="CreatedDate" Type="DateTime" />
+          <NavigationProperty Name="customer" Relationship="Self.totalbill_ibfk_1" FromRole="totalbill" ToRole="customer" />
+          <NavigationProperty Name="panelboxbills" Relationship="Self.panelboxbill_ibfk_1" FromRole="totalbill" ToRole="panelboxbill" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FullName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="Role" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <Association Name="totalbill_ibfk_1">
+          <End Role="customer" Type="Self.customer" Multiplicity="0..1" />
+          <End Role="totalbill" Type="Self.totalbill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="customer">
+              <PropertyRef Name="CustomerId" />
+            </Principal>
+            <Dependent Role="totalbill">
+              <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="panelboxbill_ibfk_2">
+          <End Role="panelbox" Type="Self.panelbox" Multiplicity="0..1" />
+          <End Role="panelboxbill" Type="Self.panelboxbill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="panelbox">
+              <PropertyRef Name="PanelBoxId" />
+            </Principal>
+            <Dependent Role="panelboxbill">
+              <PropertyRef Name="panelBoxId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="panelboxbill_ibfk_1">
+          <End Role="totalbill" Type="Self.totalbill" Multiplicity="0..1" />
+          <End Role="panelboxbill" Type="Self.panelboxbill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="totalbill">
+              <PropertyRef Name="InvoiceNo" />
+            </Principal>
+            <Dependent Role="panelboxbill">
+              <PropertyRef Name="InvoiceNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="shreedbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="customers" EntityType="Self.customer" />
+          <EntitySet Name="panelboxes" EntityType="Self.panelbox" />
+          <EntitySet Name="panelboxbills" EntityType="Self.panelboxbill" />
+          <EntitySet Name="totalbills" EntityType="Self.totalbill" />
+          <EntitySet Name="users" EntityType="Self.user" />
+          <AssociationSet Name="totalbill_ibfk_1" Association="Self.totalbill_ibfk_1">
+            <End Role="customer" EntitySet="customers" />
+            <End Role="totalbill" EntitySet="totalbills" />
+          </AssociationSet>
+          <AssociationSet Name="panelboxbill_ibfk_2" Association="Self.panelboxbill_ibfk_2">
+            <End Role="panelbox" EntitySet="panelboxes" />
+            <End Role="panelboxbill" EntitySet="panelboxbills" />
+          </AssociationSet>
+          <AssociationSet Name="panelboxbill_ibfk_1" Association="Self.panelboxbill_ibfk_1">
+            <End Role="totalbill" EntitySet="totalbills" />
+            <End Role="panelboxbill" EntitySet="panelboxbills" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="shreedbModelStoreContainer" CdmEntityContainer="shreedbEntities">
+          <EntitySetMapping Name="customers">
+            <EntityTypeMapping TypeName="shreedbModel.customer">
+              <MappingFragment StoreEntitySet="customer">
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="PhoneNo" ColumnName="PhoneNo" />
+                <ScalarProperty Name="PanCardNo" ColumnName="PanCardNo" />
+                <ScalarProperty Name="GstinNo" ColumnName="GstinNo" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="panelboxes">
+            <EntityTypeMapping TypeName="shreedbModel.panelbox">
+              <MappingFragment StoreEntitySet="panelbox">
+                <ScalarProperty Name="PanelBoxId" ColumnName="PanelBoxId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Lable" ColumnName="Lable" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="panelboxbills">
+            <EntityTypeMapping TypeName="shreedbModel.panelboxbill">
+              <MappingFragment StoreEntitySet="panelboxbill">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="panelBoxId" ColumnName="panelBoxId" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="totalbills">
+            <EntityTypeMapping TypeName="shreedbModel.totalbill">
+              <MappingFragment StoreEntitySet="totalbill">
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="TotalPanelBoxes" ColumnName="TotalPanelBoxes" />
+                <ScalarProperty Name="TaxableAmount" ColumnName="TaxableAmount" />
+                <ScalarProperty Name="Sgst" ColumnName="Sgst" />
+                <ScalarProperty Name="Cgst" ColumnName="Cgst" />
+                <ScalarProperty Name="TotalTax" ColumnName="TotalTax" />
+                <ScalarProperty Name="NetPayable" ColumnName="NetPayable" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="shreedbModel.user">
+              <MappingFragment StoreEntitySet="user">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
